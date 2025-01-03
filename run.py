@@ -68,7 +68,20 @@ def update_all_sheet(data):
     all_worksheet = SHEET.worksheet("All")
     all_worksheet.append_row(data)
     print("Expense saved successfully!\n")
+    save_to_category_sheet(expense_data)
 
+
+def save_to_category_sheet(data):
+    """
+    Save the expense to the correct category worksheet.
+    """
+    category = data[1]
+    try: 
+        category_worksheet = SHEET.worksheet(category)
+        category_worksheet.append_row(data)
+        print(f"Expense also saved to the '{category}' worksheet!\n")
+    except Exception as e: 
+        print(f"Error: Could not save to category worksheet! {e}")
 
 
 expense_data = get_expense_data()

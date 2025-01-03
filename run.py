@@ -22,13 +22,12 @@ def get_expense_data():
     print("Example: 2024-12-23, Food, 34.15, Grocery shopping, Credit card.\n")
 
     while True:
-        user_input = input("Enter your expense details: ")
+        user_input = input("Enter your expense details:\n")
         expense_data = user_input.split(", ")
 
         if validate_expense_input(expense_data):
             print("\nYour input has been validated!\n")
             return expense_data
-        
         else: 
             print("Please try entering expense details again.\n")
 
@@ -53,7 +52,6 @@ def validate_expense_input(data):
             print("Error: Amount must be a positive number.")
             return False
 
-
     except ValueError as e: 
         print(f"Error: {e}")
         return False
@@ -68,24 +66,30 @@ def update_all_sheet(data):
     all_worksheet = SHEET.worksheet("All")
     all_worksheet.append_row(data)
     print("Expense saved successfully!\n")
-    save_to_category_sheet(expense_data)
-
+    save_to_category_sheet(data)
 
 def save_to_category_sheet(data):
     """
     Save the expense to the correct category worksheet.
     """
-    category = data[1]
+    category = data[1].strip()
     try: 
         category_worksheet = SHEET.worksheet(category)
         category_worksheet.append_row(data)
-        print(f"Expense also saved to the '{category}' worksheet!\n")
+        print(f"Expense also saved to the '{category}' worksheet!")
+
+    except gspread.exceptions.WorksheetNotFound:
+        print(f"Error: Worksheet for category '{category}' not found. Please create it manually.")
+
     except Exception as e: 
         print(f"Error: Could not save to category worksheet! {e}")
 
 
-expense_data = get_expense_data()
-update_all_sheet(expense_data)
+if __name__ == "__main__":  
+    expense_data = get_expense_data()
+    update_all_sheet(expense_data)
+    
+
 
 
 

@@ -10,11 +10,6 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open("Expense Tracker")
 
-all = SHEET.worksheet("All")
-
-data = all.get_all_values()
-
-print(data)
 
 def get_expense_data():
     """
@@ -24,18 +19,18 @@ def get_expense_data():
     print("Welcome to the Expense Tracker!")
     print("Please provide the following details about your expense.")
     print("Format: Date (YYYY-MM-DD), Category, Amount, Description, Payment Method.")
-    print("Example: 2024-12-23, Food, 34.15, Grocery shopping, Credit card\n.")
+    print("Example: 2024-12-23, Food, 34.15, Grocery shopping, Credit card.\n")
 
     while True:
         user_input = input("Enter your expense details: ")
         expense_data = user_input.split(", ")
 
         if validate_expense_input(expense_data):
-            print("\nYour input has been validated\n")
+            print("\nYour input has been validated!\n")
             return expense_data
         
         else: 
-            print("Please try entering expense details again\n")
+            print("Please try entering expense details again.\n")
 
 def validate_expense_input(data):
     """
@@ -65,8 +60,19 @@ def validate_expense_input(data):
 
     return True
 
+def update_all_sheet(data):
+    """
+    Save validated expense data to the All worksheet.
+    """
+    print("Saving your expense to the tracker...\n")
+    all_worksheet = SHEET.worksheet("All")
+    all_worksheet.append_row(data)
+    print("Expense saved successfully!\n")
 
-get_expense_data()
+
+
+expense_data = get_expense_data()
+update_all_sheet(expense_data)
 
 
 
